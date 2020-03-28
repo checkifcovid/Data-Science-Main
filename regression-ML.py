@@ -4,7 +4,7 @@ $ npm publish
 import numpy as np
 import pandas as pd
 import statistics
-data = pd.read_csv("filename/dataset name/.csv")
+data = pd.read_csv("findthecluster/Data-processing-/data_latest.csv")
 data.head()
 # Cleaning data, matching arrays to axes 
 
