@@ -65,8 +65,8 @@ Unsupervised cluster SVM non-linear Kernel model
 
 # Additional Stuff
 1. What are the data sources?
-- Survey data
-- Localized covid testing data
+  - Survey data
+  - Localized covid testing data
 
 2. What are the predictions?
 Likelihood of covid positivity based on self reported symptom
