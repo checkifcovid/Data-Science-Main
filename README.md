@@ -1,4 +1,4 @@
-# FindTheCluster Data Science
+# CheckIfCovid Data Science
 
 Aim: This is an overview of the data approach to modelling COVID-19 positivity.
 
