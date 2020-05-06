@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-file_path = pathlib.Path("data/experimental/data_latest.csv")
+file_path = pathlib.Path("archive/data/data_latest.csv")
 data = pd.read_csv(file_path)
 
 # Cleaning data, matching arrays to axes
