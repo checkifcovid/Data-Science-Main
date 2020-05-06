@@ -1,6 +1,6 @@
-#!/usr/bin/env python
-# coding: utf-8
-
+# This file visualizes the centroids of a given dataset based on the lat and long coordinates.
+import os
+import pathlib
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,18 +8,17 @@ from geopy.distance import geodesic
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-get_ipython().run_line_magic('matplotlib', 'inline')
 
 
+# Load the data
+# Unsure where this data is coming from...
+file_path = pathlib.Path('data/out.csv')
 
-data = pd.read_csv('out.csv', sep=',')
+# assert os.path.isfile(file_path)
+data = pd.read_csv(file_path, sep=',') # not useful name
 
-
+# Only using location?
 data = data[["latitude","longitude"]]
-
-
-data
-
 
 def clean_dataset(df):
     assert isinstance(df, pd.DataFrame), "df needs to be a pd.DataFrame"
@@ -28,11 +27,12 @@ def clean_dataset(df):
     return df[indices_to_keep].astype(np.float64)
 
 
-clean_dataset(data)
+# Not sure what this is doing without any `=`
+# clean_dataset(data)
+
 
 Kmean = KMeans(n_clusters=3)
 Kmean.fit(data)
-
 
 centroids = Kmean.cluster_centers_
 print(centroids)
@@ -53,7 +53,7 @@ for i in range(1, 30):
     km.fit(data)
     distortions.append(km.inertia_)
 
-# plot
+# Visualize results
 plt.plot(range(1, 30), distortions, marker='o')
 plt.xlabel('Number of clusters')
 plt.ylabel('Distortion')
