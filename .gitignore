@@ -8,6 +8,3 @@ venv
 
 # Ignore secret! (if they exist)
 secret
-
-# Ignore notebooks (if they exist)
-Notebooks
