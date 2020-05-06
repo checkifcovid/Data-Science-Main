@@ -1,20 +1,23 @@
-"publishConfig": { "registry": "https://npm.pkg.github.com/" }
-$ npm login --registry=https://npm.pkg.github.com/
-$ npm publish
+# This file builds a linear regression model for ?some data? predicting ?some prediction?
+
+import os
+import pathlib
 import numpy as np
 import pandas as pd
-import statistics
-data = pd.read_csv("findthecluster/Data-processing-/data_latest.csv")
-data.head()
-# Cleaning data, matching arrays to axes 
 
+
+file_path = pathlib.Path("data/experimental/data_latest.csv")
+data = pd.read_csv(file_path)
+
+# Cleaning data, matching arrays to axes
 data = np.asarray(data)
 X = data[:, :-1]
-Y = data[:, -1]
+Y = data[:, -1] # This assumes Y is the last column?
 
+# YB: The code below is not appropriate to use... Instead, use a fillna or dropna?
 # Replacing nan value with average value of values from the same column
 for column in range(X.shape[1]):
-    mean = statistics.mean(v for v in X[:, column] if not np.isnan(v))
+    mean = np.mean(v for v in X[:, column] if not np.isnan(v))
     X[:, column][np.isnan(X[:, column])] = mean
 
 # Feature scaling to range[0:1]

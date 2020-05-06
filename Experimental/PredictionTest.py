@@ -12,7 +12,7 @@ from sklearn.decomposition import PCA
 
 # Load the data
 # Unsure where this data is coming from...
-file_path = pathlib.Path('data/out.csv')
+file_path = pathlib.Path('data/experimental/out.csv')
 
 # assert os.path.isfile(file_path)
 data = pd.read_csv(file_path, sep=',') # not useful name

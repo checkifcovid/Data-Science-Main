@@ -1,9 +1,12 @@
-print('Data-processing/COVID19_open_line_list')
+# This file builds a SVM classifier for synthetic data.
 
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.font_manager
 from sklearn import svm
+
+# YB: Not sure the purpose here of meshgrid
+
 
 xx, yy = np.meshgrid(np.linspace(-5, 5, 500), np.linspace(-5, 5, 500))
 # Generate train data
