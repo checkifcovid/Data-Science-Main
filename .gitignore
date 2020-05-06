@@ -8,3 +8,6 @@ venv
 
 # Ignore secret! (if they exist)
 secret
+
+# Ignore data from v2 (real)
+v2/data
