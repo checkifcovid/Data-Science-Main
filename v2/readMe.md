@@ -24,3 +24,5 @@ pip install -r requirements.txt
 ```
 python3 main.py
 ```
+
+**Note:** Make sure you have `aws credentials` either as environmental variables _or_ in a `secret` directory. Additionally, your bucket name should be stored in a file `aws_bucket_path.json` containing the key `"BUCKET_NAME"`. _(modification to this will be forthcoming)_
