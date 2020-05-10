@@ -5,7 +5,8 @@ import boto3
 import botocore
 
 # Import custom stuff
-from standard_functions import find_date_in_str, get_aws_creds
+from standard_functions.datetime import find_date_in_str
+from standard_functions.get_creds import get_aws_creds
 
 
 # Credentials
