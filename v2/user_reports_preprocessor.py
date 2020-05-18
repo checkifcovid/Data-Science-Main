@@ -15,8 +15,8 @@ pd.options.display.max_columns = 100
 
 
 # Import custom functions
-from standard_functions.path import get_newest_file
-from standard_functions.datetime import find_date_in_str
+from utils.path import get_newest_file
+from utils.datetime import find_date_in_str
 
 # ==============================================================================
 # Define additional functions
