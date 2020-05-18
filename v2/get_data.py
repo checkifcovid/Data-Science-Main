@@ -1,11 +1,12 @@
-import os
 import json
 import re
+import os
 import boto3
 import botocore
 
 # Import custom stuff
-from standard_functions import find_date_in_str, get_aws_creds
+from utils.datetime import find_date_in_str
+from utils.get_creds import get_aws_creds
 
 
 # Credentials
