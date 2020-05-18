@@ -40,10 +40,10 @@ def split_to_train_test():
 
     # Balance with SMOTE
     print("* Balancing data with smote")
-    X_train, X_test, y_train, y_test = split_and_balance_with_SMOTE(X,y, test_size=0.5)
+    X_train, X_test, y_train, y_test = split_and_balance_with_SMOTE(X,y, test_size=0.5, min_v=2)
 
     # Now Machine learning can be executed!
-    print("Completed!")
+    print(f"Completed!\n\nValue counts for y_train:\n{y_train.y.value_counts()};\n\ny_test:\n{pd.Series(y_test).value_counts()}")
 
 # ==============================================================================
 # On execution:

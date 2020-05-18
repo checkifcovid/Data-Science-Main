@@ -3,16 +3,20 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 
 
-def split_and_balance_with_SMOTE(X,y, test_size=0.25):
+def split_and_balance_with_SMOTE(X,y, test_size=0.25, min_v=1):
     """
     returns properly oversampled data
 
     Use as follows: `X_train, X_test, y_train, y_test = balance_data_with_SMOTE(X,y)`
 
+    params:
+        min_v: The minimum number of any value in the X & Y train / test samples.
+            If min isn't reached, a new random state will be set and the data will be reshuffled
+
     ---
     Documentation:
         https://imbalanced-learn.readthedocs.io/en/stable/generated/imblearn.over_sampling.SMOTE.html
-        
+
     """
 
     keep_splitting = True
@@ -31,8 +35,8 @@ def split_and_balance_with_SMOTE(X,y, test_size=0.25):
             all_val_counts.extend(data_counts.values)
 
         min_v_count = min(all_val_counts)
-        if min_v_count <=1:
-            print(f" * Samples aren't balanced enough for smote. Try splitting again. {n=}")
+        if min_v_count <=min_v:
+            print(f" * Samples aren't balanced enough for smote. ({min_v=}, {min_v_count=}) Try splitting again. {n=}")
             n+=1
         else:
             keep_splitting = False
