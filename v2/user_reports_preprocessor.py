@@ -86,7 +86,7 @@ del df_temp # stay neat
 #   single quotation mark \' must be substituted for double \"
 nested_cols_decoded = ["Symptoms"]
 for col in nested_cols_decoded:
-    df_temp = df[col].replace({'\'': '"',"True":"true"}, regex=True).apply(json.loads).apply(pd.Series).add_prefix(f"{col}_")
+    df_temp = df[col].replace({'\'': '"',"True":"true","False":"false"}, regex=True).apply(json.loads).apply(pd.Series).add_prefix(f"{col}_")
     df_temp.fillna(False,inplace=True)
     df = df.merge(df_temp, left_index=True, right_index=True)
     df.drop(columns=col,inplace=True) #dynamically drop them
@@ -222,6 +222,10 @@ df.drop(columns=dt_columns, errors="ignore", inplace=True)
 del dt_columns, needed_dt_columns, custom_dt_columns # stay neat
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# Also, soon drop all entries whose zip code is death valley
+# (Used for testing...)
+df = df[df["PostalCode"]!="92328"]
 
 # Postal codes!
 # SKIP FOR NOW
