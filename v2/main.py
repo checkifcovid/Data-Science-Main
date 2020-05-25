@@ -11,6 +11,7 @@ pd.options.display.max_rows = 100
 pd.options.display.max_columns = 100
 
 
+
 # Load custom functions
 from user_reports_preprocessor import get_preprocessed_df
 from utils.split_to_train_test import split_and_balance_with_SMOTE
