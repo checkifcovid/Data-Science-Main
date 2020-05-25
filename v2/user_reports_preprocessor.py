@@ -228,7 +228,7 @@ del dt_columns, needed_dt_columns, custom_dt_columns # stay neat
 
 # Also, soon drop all entries whose zip code is death valley
 # (Used for testing...)
-df = df[df["PostalCode"]!="92328"]
+# df = df[df["PostalCode"]!="92328"] #Make sure to omit soon!
 
 # Postal codes!
 # SKIP FOR NOW
