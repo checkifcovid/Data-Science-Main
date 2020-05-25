@@ -28,7 +28,7 @@ def split_to_train_test():
 
     # Consider dropping all those who haven't been tested:
     discrimator_col = "Diagnosis_tested"
-    df = df[~df[discrimator_col]!=True] # dropping when not true
+    df.drop(df[df[discrimator_col]!=True].index, inplace=True) # dropping when not true
 
     # Make sure your data has the y_col
     assert y_col in df.columns

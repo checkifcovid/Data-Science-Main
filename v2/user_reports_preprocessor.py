@@ -24,11 +24,14 @@ from utils.datetime import find_date_in_str
 
 
 def extract_from_dict(my_dict):
+    """Extracts data from a nested structure"""
     if type(my_dict)!=dict:
         my_dict = json.loads(my_dict)
+    # Begin extracting values
     new_dict = {}
     for key, value in my_dict.items():
         new_dict[key] = list(value.values())[0]
+
     return new_dict
 
 
