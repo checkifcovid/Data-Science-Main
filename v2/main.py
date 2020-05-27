@@ -10,12 +10,17 @@ import pandas as pd
 pd.options.display.max_rows = 100
 pd.options.display.max_columns = 100
 
-# Machine Learning modules
+# Machine Learning models
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression, BayesianRidge
 from sklearn.ensemble import RandomForestClassifier
+
+# Machine Learning metrics
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score, balanced_accuracy_score, log_loss, precision_score, recall_score, f1_score
+
+# Machine Learning externals
+from sklearn.externals import joblib
 
 # Load custom functions
 from user_reports_preprocessor import get_preprocessed_df
@@ -152,9 +157,10 @@ if __name__ == '__main__':
 
     # save model metrics
     os.makedirs("models",exist_ok=True)
+    today = datetime.datetime.today().strftime("%m-%d-%Y")
 
     all_models_save = [x["model_info"] for x in all_models]
-    file_path = "models/today.json" # fix for proper today
+    file_path = f"models/models_info_{today}.json" # fix for proper today
 
     with open(file_path, "w") as f:
         json.dump(all_models_save,f)
@@ -162,9 +168,11 @@ if __name__ == '__main__':
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
     # Choose best model here
-    None
+    best_model = all_models[0]
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-    
+
     # Save model
-    # print(my_model)
+    model_path = f"models/best_model_{today}.joblib"
+    print(f"Saving model to {model_path}")
+    joblib.dump(best_model, model_path)
