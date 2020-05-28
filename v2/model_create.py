@@ -154,10 +154,22 @@ if __name__ == '__main__':
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
+    # Choose best model here
+    for model in all_models:
+        if model: # Is the best
+            model["model_info"].update({"is_best":True})
+        else:
+            model["model_info"].update({"is_best":False})
+
+    # Now choose the best one
+    #   FUTURE: There has to be a neater way to do this...
+    best_model =[x for x in all_models if x["model_info"]["is_best"]==True]
+
+    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
     # save model metrics
     today = datetime.datetime.today().strftime("%m-%d-%Y")
     os.makedirs(f"models/{today}",exist_ok=True)
-
 
     all_models_save = [x["model_info"] for x in all_models]
     file_path = f"models/{today}/model_info.json"
@@ -165,10 +177,7 @@ if __name__ == '__main__':
     with open(file_path, "w") as f:
         json.dump(all_models_save,f)
 
-    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-    # Choose best model here
-    best_model = all_models[0]
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
