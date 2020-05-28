@@ -27,9 +27,27 @@ python3 main.py
 
 **Note:** Make sure you have `aws credentials` either as environmental variables _or_ in a `secret` directory. Additionally, your bucket name should be stored in a file `aws_bucket_path.json` in the `secret` dir and should contain the key `"BUCKET_NAME"`. _(modification to this will be forthcoming)_
 
-======
+----
+## Payloads
 
-Model Apply will return a json with the following structure:
+Incoming payload will have the following structure:
+```
+{"survey_id": "002",
+ "user_id": "12098789",
+ "report_date": "2020-03-27 12:00:00",
+ "report_source": "report_diagnosis",
+ "gender": "Female",
+ "age": "54",
+ "calendar": {"onset" : "03/16/2020", "tested" : "04/24/2020"},
+ "postcode": "07093",
+ "country": "United States of America",
+ "country_code" : "USA",
+ "diagnosis": {"tested" : "no" },
+ "symptoms": {"fever": "False", "cough": "True", "runny_nose": "false"}
+}
+```
+
+Model Apply will return a payload with the following structure:
 ```
 {
   "diagnosis_positive": False,
