@@ -176,6 +176,10 @@ if __name__ == '__main__':
 
     # Select best model + Refit to all data
 
+    # --------------------------------------------------------------------------
+    # REVIEW NEEDED: Is this appropriate for the time being?
+    # --------------------------------------------------------------------------
+
     # Resplit
     X_actual,y_actual = split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="actual")
 
