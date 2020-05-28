@@ -41,7 +41,7 @@ model_info = model_raw["model_info"]
 # ==============================================================================
 
 # Load the json input
-with open("test/incoming_data_2.json","r") as f:
+with open("test/incoming_data.json","r") as f:
     my_data = json.load(f)
 
 # Convert to naive json format
@@ -88,4 +88,7 @@ my_prediction = {
     "feature_importance":model_info["feature_importance"]
 }
 
-print(my_prediction)
+print("prediction is complete.")
+# Return this as a json response to the application
+with open("test/my_prediction.json","w") as f:
+    json.dump(my_prediction,f)
