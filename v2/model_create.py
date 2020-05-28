@@ -23,7 +23,7 @@ import joblib
 
 # Load custom functions
 from user_reports_preprocessor import get_preprocessed_df
-from utils.split_to_train_test import split_and_balance_with_SMOTE
+from utils.smote import split_to_train_test_with_SMOTE, balance_X_y_actual_with_SMOTE
 from utils.ml_stats import get_true_positives_etc
 
 
@@ -44,12 +44,11 @@ def load_data():
     assert y_col in df.columns
     return df
 
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-def split_to_train_test(df):
+def split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="train"):
     """Splits and balances the dataframe"""
-    # Load the newest dataframe!
-    df = get_preprocessed_df()
-    y_col = "Diagnosis_result"
+
 
     # Consider dropping all those who haven't been tested:
     discrimator_col = "Diagnosis_tested"
@@ -65,11 +64,18 @@ def split_to_train_test(df):
 
     # Balance with SMOTE
     print("* Balancing data with smote")
-    X_train, X_test, y_train, y_test = split_and_balance_with_SMOTE(X,y, test_size=0.3, min_v=2)
 
-    # Now Machine learning can be executed!
-    # print(f"Completed!\n\nValue counts for y_train:\n{y_train.y.value_counts()};\n\ny_test:\n{pd.Series(y_test).value_counts()}")
-    return X_train, X_test, y_train, y_test
+    # If splitting for train test
+    if train_or_actual=="train":
+        X_train, X_test, y_train, y_test = split_to_train_test_with_SMOTE(X,y, test_size=0.3, min_v=2)
+        return X_train, X_test, y_train, y_test
+
+    # If splitting all data
+    elif train_or_actual =="actual":
+        X_actual, y_actual = balance_X_y_actual_with_SMOTE(X,y)
+        return X_actual, y_actual
+
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 def build_model():
     """Build a model and make available to the rest of application."""
@@ -79,6 +85,7 @@ def build_model():
 
     return model
 
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 def measure_model_performance(model, X_train, X_test, y_train, y_test):
 
@@ -89,10 +96,10 @@ def measure_model_performance(model, X_train, X_test, y_train, y_test):
     y_predict = model.predict(X_test)
     y_predict_prob = model.predict_proba(X_test)
 
+
     # Save model
     my_model = {
         "model":model,
-
         "model_info":{
 
             "model_name":model.__class__.__name__,
@@ -129,6 +136,9 @@ def measure_model_performance(model, X_train, X_test, y_train, y_test):
 
     return my_model
 
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+
 
 # ==============================================================================
 # On execution:
@@ -140,7 +150,7 @@ if __name__ == '__main__':
     df = load_data()
 
     # Split the data appropriately
-    X_train, X_test, y_train, y_test = split_to_train_test(df)
+    X_train, X_test, y_train, y_test = split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="train")
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
@@ -154,18 +164,34 @@ if __name__ == '__main__':
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-    # Choose best model here
+    # Score + Evaluate best model
     for model in all_models:
         if model: # Is the best
             model["model_info"].update({"is_best":True})
+
         else:
             model["model_info"].update({"is_best":False})
 
-    # Now choose the best one
-    #   FUTURE: There has to be a neater way to do this...
-    best_model =[x for x in all_models if x["model_info"]["is_best"]==True]
-
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+    # Select best model + Refit to all data
+
+    # Resplit
+    X_actual,y_actual = split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="actual")
+
+    #   FUTURE: There has to be a neater one-line for this...
+    for x in all_models:
+        if x["model_info"]["is_best"]==True:
+
+            # refit
+            model_refit = x["model"].fit(X_actual, y_actual.values.ravel())
+            x.update({"model (refit)": model_refit})
+
+            # Save the best model with all of its metadata
+            best_model = x
+
+
+    # --------------------------------------------------------------------------
 
     # save model metrics
     today = datetime.datetime.today().strftime("%m-%d-%Y")

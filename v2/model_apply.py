@@ -31,8 +31,14 @@ most_recent_model_info = os.path.join(most_recent, "model_info.json")
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 # Load the actual model
-model_raw = joblib.load(most_recent_model)[0]
+model_raw = joblib.load(most_recent_model)
+
+# This model is the training model
 model = model_raw["model"]
+
+# WE WANT THIS SECOND ONE FOR NOW – GIVEN THE SPARSENESS OF DATA...
+# This model is the training model refit to oversampled data – all as x_train
+model = model_raw["model (refit)"]
 
 # Load the model info
 model_info = model_raw["model_info"]
