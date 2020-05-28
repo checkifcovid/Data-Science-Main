@@ -203,19 +203,23 @@ def pre_process_data(df):
 
 
     # Create the new dt columns here
-    if all(x in ["Calendar_tested","Calendar_onset"] for x in df.columns):
-        df["N_days_Onset_to_Test"] = (df["Calendar_tested"] - df["Calendar_onset"]).dt.days
+    dt_dict = {
+        # Format is x[0] - x[1]
+        #   ex: N_days_Onset_to_Test = Calendar_tested - Calendar_onset
+        "N_days_Onset_to_Test": ["Calendar_tested","Calendar_onset"],
+        "N_days_Onset_to_Subside": ["Calendar_subsided","Calendar_onset"],
+        "N_days_Onset_to_Now": ["ReportDate","Calendar_onset"]
+        }
 
-    if all(x in ["Calendar_subsided","Calendar_onset"] for x in df.columns):
-        df["N_days_Onset_to_Subside"] = (df["Calendar_subsided"] - df["Calendar_onset"]).dt.days
+    for key, value in dt_dict.items():
+        if all([x in value for x in df.columns]):
+            df[key] = (df[value[0]] - df[value[1]]).dt.days
 
-    if all(x in ["ReportDate","Calendar_onset"] for x in df.columns):
-        df["N_days_Onset_to_Now"] = (df["ReportDate"] - df["Calendar_onset"]).dt.days
 
     # Done with the datetime columns – drop them
     df.drop(columns=dt_columns, errors="ignore", inplace=True)
-
     del dt_columns #needed_dt_columns, custom_dt_columns # stay neat
+
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -252,7 +256,7 @@ if __name__ == '__main__':
 
     # Only save if the actual program is run through the .py file.
     df = get_preprocessed_df()
-    
+
     # Get the name of the newest file etc.
     newest_csv = get_newest_file("data", ".csv")
     newest_file_dt = find_date_in_str(newest_csv).strftime("%m-%d-%Y")

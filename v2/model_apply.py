@@ -31,11 +31,11 @@ most_recent_model_info = os.path.join(most_recent, "model_info.json")
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
 # Load the actual model
-model = joblib.load(most_recent_model)
+model_raw = joblib.load(most_recent_model)[0]
+model = model_raw["model"]
 
 # Load the model info
-model_info = json.loads(open(most_recent_model_info).read())
-my_model_info = [x for x in model_info if x["is_best"]==True][0]
+model_info = model_raw["model_info"]
 
 
 # ==============================================================================
@@ -51,21 +51,41 @@ for key,value in my_data.items():
 
 # Load to a pandas dataframe
 df = pd.DataFrame.from_dict([my_data])
-df = pre_process_data(df)
 
-# Match the columns
-# print(model_info[0]["feature_importance"].keys())
 # ==============================================================================
 
 # Preprocess your input data
-None
+df = pre_process_data(df)
+
+# Match the columns
+curr_columns = model_info["feature_importance"].keys()
+new_cols = [x for x in curr_columns if x not in df.columns]
+for col in new_cols:
+    if "N_days" in col:
+        df[col] = 0 # How do we fill these in?
+    else:
+        df[col] = False
+
+drop_cols = [x for x in df.columns if x not in curr_columns]
+df.drop(columns = drop_cols, inplace=True)
 
 # ==============================================================================
 
 # Fit to the model
-None
+prediction = model.predict(df)
+
+predict_prob = model.predict_proba(df)
 
 # ==============================================================================
 
 # Export to json format
-None
+my_prediction = {
+    "diagnosis_positive": bool(prediction),
+    "pred_spread": [abs(x[0]-x[1])/2 for x in predict_prob][0],
+    "model_name": model_info["model_name"],
+    "model_training_info":model_info["meta"],
+    "model_metrics":model_info["metrics"],
+    "feature_importance":model_info["feature_importance"]
+}
+
+print(my_prediction)
