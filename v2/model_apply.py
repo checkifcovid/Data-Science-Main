@@ -1,6 +1,7 @@
 """This file applies the most recent model to incoming data."""
 import re
 import os
+import sys
 import json
 import datetime
 import pandas as pd
@@ -13,7 +14,7 @@ pd.options.display.max_columns = 100
 import joblib
 
 # Load custom functions
-from user_reports_preprocessor import pre_process_data
+from user_reports_preprocessor import pre_process_data, double_check_conversion_of_booleans
 
 # ==============================================================================
 # Begin
@@ -59,9 +60,10 @@ for key,value in my_data.items():
 df = pd.DataFrame.from_dict([my_data])
 
 # ==============================================================================
-
 # Preprocess your input data
 df = pre_process_data(df)
+df = double_check_conversion_of_booleans(df)
+
 
 # Match the columns
 curr_columns = model_info["feature_importance"].keys()

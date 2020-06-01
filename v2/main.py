@@ -25,10 +25,10 @@ def split_to_train_test():
     """Placeholder for now"""
     # Load the newest dataframe!
     df = get_preprocessed_df()
-    y_col = "Diagnosis_result"
+    y_col = "diagnosis_result"
 
     # Consider dropping all those who haven't been tested:
-    discrimator_col = "Diagnosis_tested"
+    discrimator_col = "diagnosis_tested"
     df = df[~df[discrimator_col]!=True] # dropping when not true
 
     # Make sure your data has the y_col

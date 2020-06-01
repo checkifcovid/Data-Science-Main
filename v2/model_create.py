@@ -34,10 +34,10 @@ def load_data():
     """Loads the newest data into the current file"""
     # Load the newest dataframe!
     df = get_preprocessed_df()
-    y_col = "Diagnosis_result"
+    y_col = "diagnosis_result"
 
     # Consider dropping all those who haven't been tested:
-    discrimator_col = "Diagnosis_tested"
+    discrimator_col = "diagnosis_tested"
     df.drop(df[df[discrimator_col]!=True].index, inplace=True) # dropping when not true
 
     # Make sure your data has the y_col
@@ -46,12 +46,12 @@ def load_data():
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-def split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="train"):
+def split_to_train_test(df, y_col = "diagnosis_result", train_or_actual="train"):
     """Splits and balances the dataframe"""
 
 
     # Consider dropping all those who haven't been tested:
-    discrimator_col = "Diagnosis_tested"
+    discrimator_col = "diagnosis_tested"
     df.drop(df[df[discrimator_col]!=True].index, inplace=True) # dropping when not true
 
     # Make sure your data has the y_col
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     df = load_data()
 
     # Split the data appropriately
-    X_train, X_test, y_train, y_test = split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="train")
+    X_train, X_test, y_train, y_test = split_to_train_test(df, y_col = "diagnosis_result", train_or_actual="train")
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     # --------------------------------------------------------------------------
 
     # Resplit
-    X_actual,y_actual = split_to_train_test(df, y_col = "Diagnosis_result", train_or_actual="actual")
+    X_actual,y_actual = split_to_train_test(df, y_col = "diagnosis_result", train_or_actual="actual")
 
     #   FUTURE: There has to be a neater one-line for this...
     for x in all_models:
