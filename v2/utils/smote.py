@@ -3,11 +3,11 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 
 
-def split_and_balance_with_SMOTE(X,y, test_size=0.25, min_v=1):
+def split_to_train_test_with_SMOTE(X,y, test_size=0.25, min_v=1):
     """
     returns properly oversampled data
 
-    Use as follows: `X_train, X_test, y_train, y_test = balance_data_with_SMOTE(X,y)`
+    Use as follows: `X_train, X_test, y_train, y_test = split_to_train_test_with_SMOTE(X,y)`
 
     params:
         min_v: The minimum number of any value in the X & Y train / test samples.
@@ -52,3 +52,33 @@ def split_and_balance_with_SMOTE(X,y, test_size=0.25, min_v=1):
     y_train = pd.DataFrame(data=os_data_y, columns=['y'])
 
     return X_train, X_test, y_train, y_test
+
+
+
+def balance_X_y_actual_with_SMOTE(X,y):
+    """
+    returns X and y, properly oversampled such that all classes in y are represented equally.
+
+    Use as follows: `X_actual, y_actual = balance_X_y_actual_with_SMOTE(X,y)`
+
+    ---
+    Documentation:
+        https://imbalanced-learn.readthedocs.io/en/stable/generated/imblearn.over_sampling.SMOTE.html
+
+    """
+
+    all_val_counts = pd.Series(y).value_counts()
+    min_v_count = min(all_val_counts)
+
+    # Adding the following parameters to allow flexibility for extra small data set
+    k = min_v_count-1 if min_v_count <10 else 10
+
+    os_ = SMOTE(random_state=0,k_neighbors=k)
+
+    os_data_X, os_data_y=os_.fit_sample(X, y)
+
+    X_os = pd.DataFrame(data=os_data_X, columns=X.columns)
+    y_os = pd.DataFrame(data=os_data_y)
+    y_os.columns = ["y"] # rename the column to y
+
+    return X_os, y_os

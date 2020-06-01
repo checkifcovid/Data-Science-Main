@@ -9,5 +9,12 @@ venv
 # Ignore secret! (if they exist)
 secret
 
+# Ignore all notebooks # Nah... Keep...
+# Notebooks
+.ipynb_checkpoints
+
+# Ignore output from notebooks
+Notebooks/output
+
 # Ignore data from v2 (real)
 v2/data
