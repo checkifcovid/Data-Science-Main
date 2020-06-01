@@ -9,6 +9,9 @@ venv
 # Ignore secret! (if they exist)
 secret
 
+# Ignore all models
+models
+
 # Ignore all notebooks # Nah... Keep...
 # Notebooks
 .ipynb_checkpoints
