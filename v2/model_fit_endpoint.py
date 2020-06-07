@@ -47,6 +47,7 @@ model_info = model_raw["model_info"]
 
 # ==============================================================================
 
+# HERE IS WHERE THE JSON FROM THE REQUEST ENTERS
 # Load the json input
 with open("test/incoming_data.json","r") as f:
     my_data = json.load(f)
@@ -86,6 +87,7 @@ predict_prob = model.predict_proba(df)
 
 # ==============================================================================
 
+# HERE IS WHERE THE JSON FOR THE RESPONSE EXITS
 # Export to json format
 my_prediction = {
     "diagnosis_positive": bool(prediction),
