@@ -92,3 +92,7 @@ Model Apply will return a json with the following structure:
     }
   }
 ```
+
+# DevOps
+1. Store the model on s3. _(local push)_
+2. Whenever you get a call, run a lambda on that data. _Use cloudgate API._
