@@ -26,3 +26,7 @@ python3 main.py
 ```
 
 **Note:** Make sure you have `aws credentials` either as environmental variables _or_ in a `secret` directory. Additionally, your bucket name should be stored in a file `aws_bucket_path.json` in the `secret` dir and should contain the key `"BUCKET_NAME"`. _(modification to this will be forthcoming)_
+
+# DevOps
+1. Store the model on s3. _(local push)_
+2. Whenever you get a call, run a lambda on that data. _Use cloudgate API._
