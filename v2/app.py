@@ -1,6 +1,11 @@
-"""This app functions as a REST api endpoint"""
+"""
+This app functions as a REST api endpoint
+
+Have the ability to utilize API keys -- or use VPN to limit to internal traffic
+"""
 
 import subprocess
+import requests
 import pandas as pd
 from flask import Flask, request, jsonify
 
@@ -11,14 +16,36 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+# add a rule for the index page.
+header_text = '''
+    <html><head>
+    <title>CheckIfCovid ML API</title>
+    </head><body>'''
+body_text = '''
+    <h1>Welcome to this API!</h1>
+    <p>Lot's of cool things are happening here.</p>
+    '''
+
+home_link = """<a href="/"><button>Back</button></a><br>"""
+train_model_link = """<a href="/train_model/"><button>Train Model</button></a><br>"""
+footer_text = '</body>\n</html>'
+
 
 # ------------------------------------------------------------------------------
 
 
 # A welcome message to test our server
-@app.route('/hello/')
+@app.route('/')
 def index():
-    return "<h1>Yaakov Bressler is so cool!!</h1>"
+    my_content = [
+        header_text,
+        body_text,
+        train_model_link,
+        home_link,
+        footer_text
+        ]
+    my_content = "".join(my_content)
+    return my_content
 
 
 # ------------------------------------------------------------------------------
@@ -29,12 +56,12 @@ def train_model():
     """
     If API key is given, will train the model
     """
-    api_key = request.args.get('api_key')
-
-    if not api_key:
-        return jsonify({
-            "ERROR": "api_key not found."
-        })
+    # api_key = request.args.get('api_key')
+    #
+    # if not api_key:
+    #     return jsonify({
+    #         "ERROR": "api_key not found."
+    #     })
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
@@ -57,14 +84,16 @@ def train_model():
 def respond():
 
     # Retrieve the api_key
-    api_key = request.form.get("api_key", None)
-    if not api_key:
-        return jsonify({
-            "ERROR": "api_key not found."
-        })
+    # api_key = request.form.get("api_key", None)
+    # if not api_key:
+    #     return jsonify({
+    #         "ERROR": "api_key not found."
+    #     })
 
     # Retrieve the data from  parameter
     data = request.form.get("data", None)
+    # data = request.get_json(force=True)
+
     if not data:
         return jsonify({
             "ERROR": "data not found."
