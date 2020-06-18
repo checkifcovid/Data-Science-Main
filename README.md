@@ -37,3 +37,5 @@ Finally, launch the app!
 ```
 python3 app.py
 ```
+
+**Access your app through the publiv ip4 address – appended by the port of the app."** _(Usally `:5000`)_
