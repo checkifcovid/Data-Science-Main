@@ -199,10 +199,10 @@ if __name__ == '__main__':
 
     # save model metrics
     today = datetime.datetime.today().strftime("%m-%d-%Y")
-    os.makedirs(f"models/{today}",exist_ok=True)
+    os.makedirs(os.path.join("models",today),exist_ok=True)
 
     all_models_save = [x["model_info"] for x in all_models]
-    file_path = f"models/{today}/model_info.json"
+    file_path = os.path.join("models",today, "model_info.json")
 
     with open(file_path, "w") as f:
         json.dump(all_models_save,f)
@@ -212,6 +212,6 @@ if __name__ == '__main__':
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
     # Save model
-    model_path = f"models/{today}/best_model.joblib"
+    model_path =  os.path.join("models",today, "best_model.joblib")
     print(f"Saving model to {model_path}")
     joblib.dump(best_model, model_path)
