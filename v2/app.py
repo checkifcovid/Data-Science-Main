@@ -68,12 +68,12 @@ def train_model():
     # otherwise
 
     # Create the model
-    subprocess.call("python model_create.py", shell=True)
+    subprocess.call("python model_create.py", shell=True);
 
 
+    # Add this option to distinct the POST request
     return jsonify({
         "Message": f"Finished training the model",
-        # Add this option to distinct the POST request
         "METHOD" : "POST"
     })
 
