@@ -73,7 +73,7 @@ def train_model():
 
     # Add this option to distinct the POST request
     return jsonify({
-        "Message": f"Finished training the model",
+        "Message": "Finished training the model",
         "METHOD" : "POST"
     })
 
