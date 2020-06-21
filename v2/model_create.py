@@ -4,6 +4,8 @@ import os
 import json
 import datetime
 import pandas as pd
+import boto3
+import pickle
 
 # View everything:
 pd.options.display.max_rows = 100
@@ -22,6 +24,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, log_loss, p
 import joblib
 
 # Load custom functions
+from utils.get_creds import get_ML_aws_creds
 from user_reports_preprocessor import get_preprocessed_df
 from utils.smote import split_to_train_test_with_SMOTE, balance_X_y_actual_with_SMOTE
 from utils.ml_stats import get_true_positives_etc
@@ -195,23 +198,77 @@ if __name__ == '__main__':
             best_model = x
 
 
-    # --------------------------------------------------------------------------
+    # ==========================================================================
+    # Save the model to s3
+    # ==========================================================================
+
+    # Credentials
+    AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = get_ML_aws_creds()
+
+    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+    # Bucket Name
+    if os.environ.get("ML_BUCKET_NAME"):
+        BUCKET_NAME = os.environ.get("ML_BUCKET_NAME")
+
+    else:
+        aws_bucket_path = "../secret/ml_aws_bucket_info.json"
+        bucket_info = json.loads(open(aws_bucket_path).read())
+        BUCKET_NAME = bucket_info["BUCKET_NAME"]
+
+    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+    # Load the s3 session
+    session = boto3.Session(
+        AWS_ACCESS_KEY_ID,
+        AWS_SECRET_ACCESS_KEY
+    )
+    s3 = session.resource('s3')
+    bucket = s3.Bucket(BUCKET_NAME)
+
+    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
     # save model metrics
     today = datetime.datetime.today().strftime("%m-%d-%Y")
-    os.makedirs(os.path.join("models",today),exist_ok=True)
+
+    # os.makedirs(os.path.join("models",today),exist_ok=True)
 
     all_models_save = [x["model_info"] for x in all_models]
-    file_path = os.path.join("models",today, "model_info.json")
+    model_metrics_path = os.path.join("models",today, "model_info.json")
 
-    with open(file_path, "w") as f:
-        json.dump(all_models_save,f)
+    # Model metrics
+    bucket.put_object(
+        Body = bytes(json.dumps(all_models_save).encode('UTF-8')),
+        Key=model_metrics_path
+        )
 
+    # Save model
+    model_path =  os.path.join("models",today, "best_model.pkl")
+    bucket.put_object(
+        Body = pickle.dumps(best_model),
+        Key=model_path
+        )
+
+    # Alternatively
+    # joblib.dump(best_model, model_path)
+    # bucket.upload_file(model_path, model_path)
+    # os.remove(model_path)
+
+    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+
+
+
+
+
+    # --------------------------------------------------------------------------
+    # Save the model to s3
+    # --------------------------------------------------------------------------
 
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-    # Save model
-    model_path =  os.path.join("models",today, "best_model.joblib")
-    print(f"Saving model to {model_path}")
-    joblib.dump(best_model, model_path)
+    # First model metrics
+    #
+
+    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
