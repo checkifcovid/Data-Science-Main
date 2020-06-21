@@ -40,7 +40,7 @@ def split_to_train_test_with_SMOTE(X,y, test_size=0.25, min_v=1):
             n+=1
         else:
             keep_splitting = False
-            print(f" * Done splitting. {n=}")
+            print(f" * Done splitting. n={n}")
 
 
     # Adding the following parameters to allow flexibility for extra small data set
