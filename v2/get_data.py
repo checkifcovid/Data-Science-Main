@@ -13,17 +13,22 @@ from utils.get_creds import get_aws_creds
 AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = get_aws_creds()
 
 # Bucket info
-aws_bucket_path = "../secret/aws_bucket_info.json"
+if os.environ.get("BUCKET_NAME"):
+    BUCKET_NAME = os.environ.get("BUCKET_NAME")
+    
+else:
 
-try:
-    # Try loading secret file
-    bucket_info = json.loads(open(aws_bucket_path).read())
-    # Get the bucket name
-    BUCKET_NAME = bucket_info["BUCKET_NAME"]
+    aws_bucket_path = "../secret/aws_bucket_info.json"
 
-except FileNotFoundError:
-    print(f"** uh oh **\nthe file `{aws_bucket_path}` cannot be found... (make sure the local route works?\n**")
-    raise  SystemExit('Exiting execution...')
+    try:
+        # Try loading secret file
+        bucket_info = json.loads(open(aws_bucket_path).read())
+        # Get the bucket name
+        BUCKET_NAME = bucket_info["BUCKET_NAME"]
+
+    except FileNotFoundError:
+        print(f"** uh oh **\nthe file `{aws_bucket_path}` cannot be found... (make sure the local route works?\n**")
+        raise  SystemExit('Exiting execution...')
 
 # Load the s3 session
 session = boto3.Session(
