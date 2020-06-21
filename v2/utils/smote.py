@@ -36,7 +36,7 @@ def split_to_train_test_with_SMOTE(X,y, test_size=0.25, min_v=1):
 
         min_v_count = min(all_val_counts)
         if min_v_count <=min_v:
-            print(f" * Samples aren't balanced enough for smote. ({min_v=}, {min_v_count=}) Try splitting again. {n=}")
+            print(f" * Samples aren't balanced enough for smote. (min_v={min_v}, min_v_count={min_v_count}) Try splitting again. n={n}")
             n+=1
         else:
             keep_splitting = False
