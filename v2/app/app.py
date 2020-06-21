@@ -7,7 +7,11 @@ Have the ability to utilize API keys -- or use VPN to limit to internal traffic
 import subprocess
 import requests
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, flash, redirect
+from flask_wtf.csrf import CSRFProtect
+
+# Import forms
+from forms import symptomForm
 
 # ==============================================================================
 # Begin
@@ -15,40 +19,38 @@ from flask import Flask, request, jsonify
 
 
 app = Flask(__name__)
-
-# add a rule for the index page.
-header_text = '''
-    <html><head>
-    <title>CheckIfCovid ML API</title>
-    </head><body>'''
-body_text = '''
-    <h1>Welcome to this API!</h1>
-    <p>Lot's of cool things are happening here.</p>
-    '''
-
-home_link = """<a href="/"><button>Back</button></a><br>"""
-train_model_link = """<a href="/train_model/"><button>Train Model</button></a><br>"""
-footer_text = '</body>\n</html>'
-
-
+app.config['SECRET_KEY'] = 'any secret string'
+csrf = CSRFProtect(app)
 # ------------------------------------------------------------------------------
 
 
-# A welcome message to test our server
+# Home
 @app.route('/')
 def index():
-    my_content = [
-        header_text,
-        body_text,
-        train_model_link,
-        home_link,
-        footer_text
-        ]
-    my_content = "".join(my_content)
-    return my_content
+    return render_template('index.html', title='Home')
+
+# ------------------------------------------------------------------------------
+
+@app.route('/submit-data/',  methods=['GET', 'POST'])
+def submit_data():
+
+    form = symptomForm(request.form)
+
+    if request.method == 'POST':
+        if form.validate():
+            my_data = {}
+            for key, value in form.allFields.data.items():
+                if type(value)==dict:
+                    my_data.update(value)
+            # get rid of the csrf token
+            del my_data["csrf_token"]
+            return render_template('submit-data-success.html', title="Success", data=my_data)
+    else:
+        return render_template('submit-data.html', title='Submit Data', form=form)
 
 
 # ------------------------------------------------------------------------------
+
 
 # Convert to post...
 @app.route('/train_model/', methods=['GET'])
@@ -111,4 +113,4 @@ def respond():
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)
