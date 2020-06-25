@@ -104,7 +104,7 @@ def measure_model_performance(model, X_train, X_test, y_train, y_test):
     my_model = {
         "model":model,
         "model_info":{
-
+            "date_instantiated":datetime.datetime.now(),
             "model_name":model.__class__.__name__,
             "params":model.get_params(),
 
@@ -125,7 +125,7 @@ def measure_model_performance(model, X_train, X_test, y_train, y_test):
                 "recall_score":recall_score(y_test,y_predict),
                 "f1_score": f1_score(y_test, y_predict),
                 "granular_prediction_metrics":get_true_positives_etc(y_test, y_predict, True),
-                "pred_spread": [abs(x[0]-x[1])/2 for x in y_predict_prob]
+                "pred_spread_of_test_data": [abs(x[0]-x[1])/2 for x in y_predict_prob]
             }
         }
     }
