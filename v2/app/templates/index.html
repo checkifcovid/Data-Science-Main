@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block head %}
+{{ super() }}
+  <style type="text/css">
+    .important { color: #336699; }
+  </style>
+{% endblock %}
+{% block content %}
+  <h1>Welcome to this API!</h1>
+  <p class="important">Lot's of cool things are happening here.</p>
+
+  <a href="/"><button>Back</button></a><br>
+  <a href="/train_model/"><button>Train Model</button></a><br>
+  <a href="/submit-data/"><button>Submit Data</button></a><br>
+{% endblock %}

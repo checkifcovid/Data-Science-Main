@@ -15,20 +15,11 @@ AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = get_aws_creds()
 # Bucket info
 if os.environ.get("BUCKET_NAME"):
     BUCKET_NAME = os.environ.get("BUCKET_NAME")
-    
+
 else:
-
     aws_bucket_path = "../secret/aws_bucket_info.json"
-
-    try:
-        # Try loading secret file
-        bucket_info = json.loads(open(aws_bucket_path).read())
-        # Get the bucket name
-        BUCKET_NAME = bucket_info["BUCKET_NAME"]
-
-    except FileNotFoundError:
-        print(f"** uh oh **\nthe file `{aws_bucket_path}` cannot be found... (make sure the local route works?\n**")
-        raise  SystemExit('Exiting execution...')
+    bucket_info = json.loads(open(aws_bucket_path).read())
+    BUCKET_NAME = bucket_info["BUCKET_NAME"]
 
 # Load the s3 session
 session = boto3.Session(

@@ -5,6 +5,8 @@ import sys
 import json
 import datetime
 import pandas as pd
+import boto3
+import pickle
 
 # View everything:
 pd.options.display.max_rows = 100
@@ -15,24 +17,61 @@ import joblib
 
 # Load custom functions
 from user_reports_preprocessor import pre_process_data, double_check_conversion_of_booleans
+from utils.get_creds import get_ML_aws_creds
+
+# Store data in this temp folder
+os.makedirs("data/tmp",exist_ok=True)
 
 # ==============================================================================
-# Begin
+# Load the s3 Bucket
 # ==============================================================================
 
-# Get newest model
-all_dirs = os.listdir("models")
-most_recent = max(all_dirs, key=lambda d: datetime.datetime.strptime(d, '%m-%d-%Y'))
-most_recent = os.path.join("models",most_recent)
-
-# get actual content
-most_recent_model = os.path.join(most_recent, "best_model.joblib")
-most_recent_model_info = os.path.join(most_recent, "model_info.json")
+# Credentials
+AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = get_ML_aws_creds()
 
 # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-# Load the actual model
-model_raw = joblib.load(most_recent_model)
+# Bucket Name
+if os.environ.get("ML_BUCKET_NAME"):
+    BUCKET_NAME = os.environ.get("ML_BUCKET_NAME")
+
+else:
+    aws_bucket_path = "../secret/ml_aws_bucket_info.json"
+    bucket_info = json.loads(open(aws_bucket_path).read())
+    BUCKET_NAME = bucket_info["BUCKET_NAME"]
+
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+# Load the s3 session
+session = boto3.Session(
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY
+)
+s3 = session.resource('s3')
+bucket = s3.Bucket(BUCKET_NAME)
+
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+# Get the most recent file
+all_files = [x.key for x in bucket.objects.all()]
+all_dates = [re.search("[0-9]{2}-[0-9]{2}-[0-9]{4}",x).group() for x in all_files]
+most_recent_dates = max(all_dates, key=lambda d: datetime.datetime.strptime(d, '%m-%d-%Y'))
+
+# Get the most recent files
+most_recent = [x for x in all_files if most_recent_dates in x]
+most_recent = {x.split("/")[-1]:x for x in most_recent}
+
+
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+# download content to a temp folder
+for x in ["best_model.pkl", "model_info.json"]:
+    file_name = most_recent[x]
+    bucket.download_file(file_name, f"data/tmp/{x}")
+
+# -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+# Now load the data from these files
+model_raw = pickle.load(open("data/tmp/best_model.pkl", "rb"))
 
 # This model is the training model
 model = model_raw["model"]
