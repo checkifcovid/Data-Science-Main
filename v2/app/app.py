@@ -16,7 +16,6 @@ from flask import Flask, request, jsonify, render_template, flash, redirect
 from flask_wtf.csrf import CSRFProtect
 
 # Import the cache
-from flask_caching import Cache
 from extensions import cache
 
 # Import forms
