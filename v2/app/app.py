@@ -4,9 +4,14 @@ This app functions as a REST api endpoint
 Have the ability to utilize API keys -- or use VPN to limit to internal traffic
 """
 
+import sys
+sys.path.append(".")
+from pathlib import Path
 import subprocess
 import requests
 import pandas as pd
+
+# Flask stuff
 from flask import Flask, request, jsonify, render_template, flash, redirect
 from flask_wtf.csrf import CSRFProtect
 
@@ -16,6 +21,9 @@ from extensions import cache
 
 # Import forms
 from forms import symptomForm
+
+# Model stuff
+from model.fit import fit_to_model
 
 # ==============================================================================
 # Begin
@@ -69,6 +77,14 @@ def fit_my_data():
 
     # Success vs. Failure
     if data:
+        #  *  *  *  *  *  *  *  *  *  *  *  *
+        #  This is where the magic happens
+        # Error in way data is current structured on the page.
+        # Need to reorganize it to meet the correct structure...
+        # prediction = fit_to_model(data)
+        #  *  *  *  *  *  *  *  *  *  *  *  *
+
+        # return jsonify(prediction)
         return render_template('submit-data-success.html', title="Success", data=data)
     else:
         return render_template('submit-data-failure.html', title="Failure")
@@ -80,8 +96,10 @@ def fit_my_data():
 @app.route('/train_model/', methods=['GET'])
 def train_model():
     """
-    If API key is given, will train the model
+    Will train the model
     """
+
+    # Consider mandating api key
     # api_key = request.args.get('api_key')
     #
     # if not api_key:
@@ -92,10 +110,9 @@ def train_model():
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
     # otherwise
-
-    # Create the model
-    subprocess.call("python model_create.py", shell=True);
-
+    file_path = Path("model/batch_commands/new_model.py")
+    command = f"python3 {file_path}"
+    subprocess.call(command, shell=True)
 
     # Add this option to distinct the POST request
     return jsonify({
@@ -106,15 +123,9 @@ def train_model():
 
 # ------------------------------------------------------------------------------
 
+# TO DO: Not used yet....
 @app.route('/fit_data/', methods=['POST'])
 def respond():
-
-    # Retrieve the api_key
-    # api_key = request.form.get("api_key", None)
-    # if not api_key:
-    #     return jsonify({
-    #         "ERROR": "api_key not found."
-    #     })
 
     # Retrieve the data from  parameter
     data = request.form.get("data", None)
@@ -126,8 +137,14 @@ def respond():
         })
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+    #  *  *  *  *  *  *  *  *  *  *  *  *
+    #  This is where the magic happens
+    prediction = fit_to_model(data)
+    #  *  *  *  *  *  *  *  *  *  *  *  *
+
     # Proceed
-    response = {}
+    response = prediction
 
     # Return the response in json format
     return jsonify(response)

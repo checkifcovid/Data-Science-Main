@@ -3,9 +3,12 @@ import re
 import os
 import json
 import datetime
-import pandas as pd
+import sys
+sys.path.append(".")
 import boto3
 import pickle
+
+import pandas as pd
 
 # View everything:
 pd.options.display.max_rows = 100
@@ -25,7 +28,7 @@ import joblib
 
 # Load custom functions
 from utils.get_creds import get_ML_aws_creds
-from user_reports_preprocessor import get_preprocessed_df
+from utils.user_reports_preprocessor import get_preprocessed_df
 from utils.smote import split_to_train_test_with_SMOTE, balance_X_y_actual_with_SMOTE
 from utils.ml_stats import get_true_positives_etc
 
@@ -257,26 +260,11 @@ if __name__ == '__main__':
         )
 
     print("model is saved successfully")
-    # Alternatively
+
+    # To save the model locally, use the code below
     # joblib.dump(best_model, model_path)
-    # bucket.upload_file(model_path, model_path)
-    # os.remove(model_path)
 
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-
-
-
-
-
-    # --------------------------------------------------------------------------
-    # Save the model to s3
-    # --------------------------------------------------------------------------
-
-
-    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-
-    # First model metrics
-    #
-
+    
     # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

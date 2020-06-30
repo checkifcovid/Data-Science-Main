@@ -1,8 +1,10 @@
 import json
 import re
 import os
+import sys
 import boto3
 import botocore
+sys.path.append(".")
 
 # Import custom stuff
 from utils.datetime import find_date_in_str
