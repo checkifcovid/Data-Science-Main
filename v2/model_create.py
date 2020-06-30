@@ -236,9 +236,16 @@ if __name__ == '__main__':
     all_models_save = [x["model_info"] for x in all_models]
     model_metrics_path = os.path.join("models",today, "model_info.json")
 
+
+    # Define a converter for datetime
+    def dt_converter(dt):
+        if isinstance(dt, datetime.datetime):
+            return dt.__str__()
+
+
     # Model metrics
     bucket.put_object(
-        Body = bytes(json.dumps(all_models_save).encode('UTF-8')),
+        Body = bytes(json.dumps(all_models_save,  default=dt_converter).encode('UTF-8')),
         Key=model_metrics_path
         )
 
