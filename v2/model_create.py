@@ -256,6 +256,7 @@ if __name__ == '__main__':
         Key=model_path
         )
 
+    print("model is saved successfully")
     # Alternatively
     # joblib.dump(best_model, model_path)
     # bucket.upload_file(model_path, model_path)
