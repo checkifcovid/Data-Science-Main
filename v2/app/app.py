@@ -10,6 +10,10 @@ import pandas as pd
 from flask import Flask, request, jsonify, render_template, flash, redirect
 from flask_wtf.csrf import CSRFProtect
 
+# Import the cache
+from flask_caching import Cache
+from extensions import cache
+
 # Import forms
 from forms import symptomForm
 
@@ -21,6 +25,8 @@ from forms import symptomForm
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'any secret string'
 csrf = CSRFProtect(app)
+# Initialize the cache
+cache.init_app(app=app, config={"CACHE_TYPE": "filesystem",'CACHE_DIR': '/tmp'})
 # ------------------------------------------------------------------------------
 
 
@@ -31,6 +37,7 @@ def index():
 
 # ------------------------------------------------------------------------------
 
+# User submits data manually
 @app.route('/submit-data/',  methods=['GET', 'POST'])
 def submit_data():
 
@@ -44,10 +51,27 @@ def submit_data():
                     my_data.update(value)
             # get rid of the csrf token
             del my_data["csrf_token"]
-            return render_template('submit-data-success.html', title="Success", data=my_data)
+
+            # save data to cache
+            cache.set("my_data", my_data)
+            return redirect('/submit-data-success/')
     else:
         return render_template('submit-data.html', title='Submit Data', form=form)
 
+
+# ------------------------------------------------------------------------------
+
+# Submitted data is fitted to model
+@app.route('/submit-data-success/',  methods=['GET'])
+def fit_my_data():
+
+    data = cache.get("my_data")
+
+    # Success vs. Failure
+    if data:
+        return render_template('submit-data-success.html', title="Success", data=data)
+    else:
+        return render_template('submit-data-failure.html', title="Failure")
 
 # ------------------------------------------------------------------------------
 
@@ -113,4 +137,4 @@ def respond():
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)

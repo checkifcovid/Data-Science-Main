@@ -9,6 +9,7 @@ entrypoints==0.3
 fire==0.2.1
 flake8==3.7.9
 Flask==1.1.1
+Flask-Caching==1.9.0
 Flask-Compress==1.4.0
 Flask-WTF==0.14.3
 future==0.18.2
