@@ -7,6 +7,7 @@ Have the ability to utilize API keys -- or use VPN to limit to internal traffic
 import sys
 sys.path.append(".")
 from pathlib import Path
+import json
 import subprocess
 import requests
 import pandas as pd
@@ -92,8 +93,6 @@ def fit_my_data():
     if data:
         #  *  *  *  *  *  *  *  *  *  *  *  *
         #  This is where the magic happens
-        # Error in way data is current structured on the page.
-        # Need to reorganize it to meet the correct structure...
         prediction = fit_to_model(data)
         #  *  *  *  *  *  *  *  *  *  *  *  *
 
@@ -137,30 +136,40 @@ def train_model():
 # ------------------------------------------------------------------------------
 
 # TO DO: Not used yet....
-@app.route('/fit_data/', methods=['POST'])
+@app.route('/fit_data/', methods=['POST','GET'])
 def respond():
 
-    # Retrieve the data from  parameter
-    data = request.form.get("data", None)
-    # data = request.get_json(force=True)
+    # if not request.json or not 'data' in request.json:
 
-    if not data:
-        return jsonify({
+
+    data = request.get_json()
+    print(data)
+    print("****")
+
+    # print(request.args)
+    # # Retrieve the data from  parameter
+    # data = request.form.get("data", None)
+    data = request.args.get('data')
+    print(data)
+    print("****")
+        # # data = request.get_json(force=True)
+    #
+    # # Success vs. Failure
+    # if data:
+    #     #  *  *  *  *  *  *  *  *  *  *  *  *
+    #     #  This is where the magic happens
+    #     prediction = fit_to_model(data)
+    #     #  *  *  *  *  *  *  *  *  *  *  *  *
+    #
+    #     return jsonify(prediction)
+    return jsonify({
             "ERROR": "data not found."
         })
+    # # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-    # -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-    #  *  *  *  *  *  *  *  *  *  *  *  *
-    #  This is where the magic happens
-    prediction = fit_to_model(data)
-    #  *  *  *  *  *  *  *  *  *  *  *  *
 
-    # Proceed
-    response = prediction
 
-    # Return the response in json format
-    return jsonify(response)
 
 
 
