@@ -15,6 +15,7 @@ import pandas as pd
 # Flask stuff
 from flask import Flask, request, jsonify, render_template, flash, redirect
 from flask_wtf.csrf import CSRFProtect
+from flask_restful import reqparse, abort, Api, Resource
 
 # Import the cache
 from extensions import cache
@@ -31,10 +32,19 @@ from model.fit import fit_to_model
 
 
 app = Flask(__name__)
+api = Api(app)
 app.config['SECRET_KEY'] = 'any secret string'
 csrf = CSRFProtect(app)
+
 # Initialize the cache
 cache.init_app(app=app, config={"CACHE_TYPE": "filesystem",'CACHE_DIR': '/tmp'})
+
+# Initialize args
+parser = reqparse.RequestParser()
+
+# Configure args per endpoint
+# parser.add_argument('data', type=str, required=True, help='Data to be fitted')
+
 # ------------------------------------------------------------------------------
 
 
@@ -139,29 +149,24 @@ def train_model():
 @app.route('/fit_data/', methods=['POST','GET'])
 def respond():
 
-    # if not request.json or not 'data' in request.json:
+    app.logger.info('Fitting data to model')
 
+    # Retrieve the data from  parameter
+    data = request.form.get("data", None)
+    data = json.loads(data)
 
-    data = request.get_json()
-    print(data)
-    print("****")
+    # Alternatively:
+    # args = parser.parse_args()
+    # data = args.get("data")
 
-    # print(request.args)
-    # # Retrieve the data from  parameter
-    # data = request.form.get("data", None)
-    data = request.args.get('data')
-    print(data)
-    print("****")
-        # # data = request.get_json(force=True)
-    #
-    # # Success vs. Failure
-    # if data:
-    #     #  *  *  *  *  *  *  *  *  *  *  *  *
-    #     #  This is where the magic happens
-    #     prediction = fit_to_model(data)
-    #     #  *  *  *  *  *  *  *  *  *  *  *  *
-    #
-    #     return jsonify(prediction)
+    # Success vs. Failure
+    if data:
+        #  *  *  *  *  *  *  *  *  *  *  *  *
+        #  This is where the magic happens
+        prediction = fit_to_model(data)
+        #  *  *  *  *  *  *  *  *  *  *  *  *
+
+        return jsonify(prediction)
     return jsonify({
             "ERROR": "data not found."
         })

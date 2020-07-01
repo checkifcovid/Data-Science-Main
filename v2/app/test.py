@@ -22,5 +22,5 @@ endpoint = "fit_data/"
 my_url = os.path.join(base_url, endpoint)
 
 
-r = requests.get(my_url, data=json.dumps({"data":my_data}))
+r = requests.get(my_url, data={"data":json.dumps(my_data)})
 print(r.text)
