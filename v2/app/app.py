@@ -3,7 +3,7 @@ This app functions as a REST api endpoint
 
 Have the ability to utilize API keys -- or use VPN to limit to internal traffic
 """
-
+import os
 import sys
 sys.path.append(".")
 from pathlib import Path
