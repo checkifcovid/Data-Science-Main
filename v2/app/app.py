@@ -27,7 +27,7 @@ from forms import symptomForm
 from model.fit import fit_to_model
 
 # ==============================================================================
-# Begin
+# Initiatlize
 # ==============================================================================
 
 
@@ -45,7 +45,23 @@ parser = reqparse.RequestParser()
 # Configure args per endpoint
 # parser.add_argument('data', type=str, required=True, help='Data to be fitted')
 
-# ------------------------------------------------------------------------------
+
+
+# ==============================================================================
+# QA Test
+# ==============================================================================
+
+# If current model isn't loaded, load it
+model_path = Path("data/tmp/best_model.pkl")
+if not os.path.isfile(model_path):
+    file_path = Path("model/batch_commands/new_model.py")
+    command = f"python3 {file_path}"
+    subprocess.call(command, shell=True)
+
+
+# ==============================================================================
+# Define Routes
+# ==============================================================================
 
 
 # Home
@@ -181,4 +197,4 @@ def respond():
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0")
