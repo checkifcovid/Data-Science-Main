@@ -2,13 +2,14 @@
 {% block title %}{{ title }}{% endblock %}
 {% block head %}
 {{ super() }}
-  <style type="text/css">
-    .important { color: #336699; }
-  </style>
+
+
 {% endblock %}
 {% block content %}
-  <h1>Welcome to this API!</h1>
-  <p class="important">Lot's of cool things are happening here.</p>
+  <h1>CheckIfCovid ML API!</h1>
+  <p class="important">This API can be used to manage
+    and utilize powerful machine learning applications.
+  </p>
 
   <a href="/"><button>Back</button></a><br>
   <a href="/train_model/"><button>Train Model</button></a><br>

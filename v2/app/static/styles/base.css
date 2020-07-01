@@ -1,0 +1,48 @@
+
+
+/* Main styles */
+body{
+  font-family: Arial;
+  line-height: 1.25;
+  margin:20px;
+}
+
+h1{
+  font-weight: 400;
+  margin: 10px 0;
+  font-size: 42px;
+  letter-spacing: 1px;
+  word-spacing: 10px;
+}
+
+.important {
+  font-weight: 400;
+  color: #336699;
+}
+
+/*  The footer  */
+#footer{
+  font-size: 10px;
+  margin-left:5vw;
+}
+
+/* Style your buttons */
+button, input[type="submit"]{
+  border: none;
+  display: inline-block;
+  padding: 8px 16px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  margin-bottom: 16px!important;
+  color: #FFFFFF;
+  background-color: #4CAF50;
+}
+
+button:hover, input[type="submit"]:hover{
+  color: #FFFFFF;
+  background-color: #3e8e41;

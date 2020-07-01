@@ -53,7 +53,9 @@ parser = reqparse.RequestParser()
 
 # If current model isn't loaded, load it
 model_path = Path("data/tmp/best_model.pkl")
+
 if not os.path.isfile(model_path):
+    app.logger.info('Training and loading a new model')
     file_path = Path("model/batch_commands/new_model.py")
     command = f"python3 {file_path}"
     subprocess.call(command, shell=True)
@@ -67,6 +69,9 @@ if not os.path.isfile(model_path):
 # Home
 @app.route('/')
 def index():
+    # I'd love to display all the endpoints...
+    all_routes = ["train_model", "fit_data/"]
+
     return render_template('index.html', title='Home')
 
 # ------------------------------------------------------------------------------
@@ -197,4 +202,4 @@ def respond():
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    app.run(host="0.0.0.0")
+    app.run(host="0.0.0.0", debug=True)

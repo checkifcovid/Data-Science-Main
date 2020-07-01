@@ -17,7 +17,14 @@ my_data = {
  "symptoms": {"fever": "False", "cough": "True", "runny_nose": "false"}
 }
 
-base_url = "http://0.0.0.0:5000/"
+local = False
+
+if local:
+    base_url = "http://0.0.0.0:5000/"
+else:
+    base_url = "http://54.165.239.34:5000"
+
+
 endpoint = "fit_data/"
 my_url = os.path.join(base_url, endpoint)
 
