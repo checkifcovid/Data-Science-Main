@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField
-from wtforms.fields import FormField, FieldList
+from wtforms.fields import FormField, FieldList, SelectMultipleField
 from wtforms.validators import DataRequired
 
 
@@ -11,11 +11,13 @@ class userInfo(FlaskForm):
     report_date = StringField('report_date', validators=[DataRequired()], default="2020-03-27 12:00:00")
     report_source = StringField('report_source', validators=[DataRequired()], default = "report_diagnosis")
 
-class symptomInfo(FlaskForm):
+class demographicInfo(FlaskForm):
     gender = StringField('gender', validators=[DataRequired()], default="female")
     age = StringField('age', validators=[DataRequired()], default="55")
-    symptoms = StringField("symptoms", default="none")
 
+class symptomsInfo(FlaskForm):
+    all_symptoms = ["fever", "running_nose", "cough"]
+    symptoms = SelectMultipleField("Select all your symptoms", choices=[(x,x) for x in all_symptoms ])
 
 class diagnosticInfo(FlaskForm):
     calendar_onset = StringField('onset', default="03/16/2020")
@@ -28,7 +30,8 @@ class diagnosticInfo(FlaskForm):
 
 class symptomFields(FlaskForm):
     userInfo = FormField(userInfo)
-    symptomInfo = FormField(symptomInfo)
+    demographicInfo = FormField(demographicInfo)
+    symptomsInfo = FormField(symptomsInfo)
     diagnosticInfo = FormField(diagnosticInfo)
 
 # The acrtual form!

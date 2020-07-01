@@ -52,6 +52,8 @@ def submit_data():
 
     if request.method == 'POST':
         if form.validate():
+
+            # All code below is to coerce submitted data to required schema
             my_data = {}
             for key, value in form.allFields.data.items():
                 if type(value)==dict:
@@ -60,12 +62,16 @@ def submit_data():
             del my_data["csrf_token"]
 
             # Properly structure the data
-            for x in ["calendar","diagnosis","symptoms"]:
+            for x in ["calendar","diagnosis"]:
                 my_data[x] = {}
                 for key, value in my_data.items():
                     if x in key and type(value) == str:
                         new_key = key.split("_")[-1]
                         my_data[x].update({new_key:value})
+
+            # Set the values for symptoms
+            all_symptoms = my_data.get("symptoms")
+            my_data["symptoms"] = {y:True for y in all_symptoms}
 
             # save data to cache
             cache.set("my_data", my_data)
