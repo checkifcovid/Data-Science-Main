@@ -59,6 +59,14 @@ def submit_data():
             # get rid of the csrf token
             del my_data["csrf_token"]
 
+            # Properly structure the data
+            for x in ["calendar","diagnosis","symptoms"]:
+                my_data[x] = {}
+                for key, value in my_data.items():
+                    if x in key and type(value) == str:
+                        new_key = key.split("_")[-1]
+                        my_data[x].update({new_key:value})
+
             # save data to cache
             cache.set("my_data", my_data)
             return redirect('/submit-data-success/')
@@ -80,11 +88,11 @@ def fit_my_data():
         #  This is where the magic happens
         # Error in way data is current structured on the page.
         # Need to reorganize it to meet the correct structure...
-        # prediction = fit_to_model(data)
+        prediction = fit_to_model(data)
         #  *  *  *  *  *  *  *  *  *  *  *  *
 
         # return jsonify(prediction)
-        return render_template('submit-data-success.html', title="Success", data=data)
+        return render_template('submit-data-success.html', title="Success", data=prediction)
     else:
         return render_template('submit-data-failure.html', title="Failure")
 
