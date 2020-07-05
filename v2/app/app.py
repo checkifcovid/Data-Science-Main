@@ -21,7 +21,7 @@ from flask_restful import reqparse, abort, Api, Resource
 from extensions import cache
 
 # Import forms
-from forms import symptomForm
+from forms import symptomForm, jsonForm
 
 # Model stuff
 from model.fit import fit_to_model
@@ -114,6 +114,41 @@ def submit_data():
 
 # ------------------------------------------------------------------------------
 
+# User submits data by pasting a json
+@app.route('/submit-data-json/',  methods=['GET', 'POST'])
+def submit_data_json():
+
+    form = jsonForm(request.form)
+
+    if request.method == 'POST':
+
+        if form.validate():
+            my_data = form.allFields.data.get("jsonData")
+            my_data = json.loads(my_data)
+
+            # Properly structure the data
+            for x in ["calendar","diagnosis"]:
+                my_data[x] = {}
+                for key, value in my_data.items():
+                    if x in key and type(value) == str:
+                        new_key = key.split("_")[-1]
+                        my_data[x].update({new_key:value})
+
+            cache.set("my_data", my_data)
+
+        else:
+            my_errors = {k:v for k,v in form.errors.get("allFields",{}).items()}
+            cache.set("errors", my_errors)
+
+        # Now send data along
+        return redirect('/submit-data-success/')
+
+    else:
+        return render_template('submit-data-json.html', title='Submit Data (Json)', form=form)
+
+
+# ------------------------------------------------------------------------------
+
 # Submitted data is fitted to model
 @app.route('/submit-data-success/',  methods=['GET'])
 def fit_my_data():
@@ -122,6 +157,8 @@ def fit_my_data():
 
     # Success vs. Failure
     if data:
+
+        # Right now, no test on the data to make sure it complies with API...
         #  *  *  *  *  *  *  *  *  *  *  *  *
         #  This is where the magic happens
         prediction = fit_to_model(data)
@@ -129,8 +166,10 @@ def fit_my_data():
 
         # return jsonify(prediction)
         return render_template('submit-data-success.html', title="Success", data=prediction)
+
     else:
-        return render_template('submit-data-failure.html', title="Failure")
+        errors = cache.get("errors")
+        return render_template('submit-data-failure.html', title="Failure", errors=errors)
 
 # ------------------------------------------------------------------------------
 
@@ -202,4 +241,4 @@ def respond():
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
-    app.run(host="0.0.0.0", debug=False)
+    app.run(host="0.0.0.0", debug=True)

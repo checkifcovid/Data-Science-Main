@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField
+from wtforms import StringField, TextAreaField
 from wtforms.fields import FormField, FieldList, SelectMultipleField
-from wtforms.validators import DataRequired
-
+from wtforms.validators import DataRequired, Regexp
+import json
 
 # Make a form
 class userInfo(FlaskForm):
@@ -37,3 +37,32 @@ class symptomFields(FlaskForm):
 # The acrtual form!
 class symptomForm(FlaskForm):
     allFields = FormField(symptomFields)
+
+
+# ==============================================================================
+
+# Make a form to submit json data
+
+# default data
+default_data = {
+    "survey_id": "002",
+    "user_id": "12098789",
+    "report_date": "2020-03-27 12:00:00",
+    "report_source": "report_diagnosis",
+    "gender": "Female",
+    "age": "54",
+    "calendar": {"onset" : "03/16/2020", "tested" : "04/24/2020"},
+    "postcode": "07093",
+    "country": "United States of America",
+    "country_code" : "USA",
+    "diagnosis": {"tested" : "no" },
+    "symptoms": {"fever": "False", "cough": "True", "runny_nose": "false"}
+}
+
+# Make a form
+class jsonData(FlaskForm):
+    jsonData = TextAreaField('jsonData', validators=[DataRequired(), Regexp("^\{.*\}$", message="Username must contain only letters numbers or underscore")], default=json.dumps(default_data))
+
+# The acrtual form!
+class jsonForm(FlaskForm):
+    allFields = FormField(jsonData)

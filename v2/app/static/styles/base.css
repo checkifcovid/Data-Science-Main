@@ -15,6 +15,22 @@ h1{
   word-spacing: 10px;
 }
 
+h2{
+  font-weight: 400;
+  margin: 10px 0;
+  font-size: 32px;
+  letter-spacing: 0.75px;
+  word-spacing: 5px;
+}
+
+h3{
+  font-weight: 400;
+  margin: 10px 0;
+  font-size: 22px;
+  letter-spacing: 0.5px;
+  word-spacing: 2px;
+}
+
 .important {
   font-weight: 400;
   color: #336699;
@@ -30,6 +46,7 @@ h1{
 button, input[type="submit"]{
   border: none;
   display: inline-block;
+  width: 30vw;
   padding: 8px 16px;
   vertical-align: middle;
   overflow: hidden;
@@ -46,3 +63,13 @@ button, input[type="submit"]{
 button:hover, input[type="submit"]:hover{
   color: #FFFFFF;
   background-color: #3e8e41;
+}
+
+/* Formatting Stuff */
+.button-group{
+  display:flex;
+  justify-content: flex-start;
+}
+.button-group > *{
+  margin-right: 2.5vw;
+}
