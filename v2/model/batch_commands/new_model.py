@@ -8,13 +8,19 @@ def train_new_model():
     """
     Trains and saves a new model.
     """
-    # 1. Get the newest data & Create a new model
+    # 1. Get the newest data
+    file_path = Path("model/get_data.py")
+    command = f"python3 {file_path}"
+    subprocess.call(command, shell=True)
+
+
+    # 2. Create a new model
     file_path = Path("model/create.py")
     command = f"python3 {file_path}"
     subprocess.call(command, shell=True)
 
 
-    # 2. Download that model
+    # 3. Download that model
     file_path = Path("model/get_most_recent_model.py")
     command = f"python3 {file_path}"
     subprocess.call(command, shell=True)
