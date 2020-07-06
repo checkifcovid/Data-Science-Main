@@ -108,7 +108,10 @@ def pre_process_data(df):
     dt_columns = [x for x in df.columns if any(y in x for y in ["date","calendar"])]
     for col in dt_columns:
         # Write some logic to test for timezone...
-        df[col] = pd.to_datetime(df[col]) #.dt.tz_localize(None) # We don't want timezones...
+        df[col] = pd.to_datetime(df[col])
+        # If timezone, remove it
+        df[col] = df[col].apply(lambda x: pd.to_datetime(x).tz_localize(None) if x.tzinfo is not None else x)
+
     del dt_columns # stay neat
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
