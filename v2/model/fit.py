@@ -136,10 +136,13 @@ def fit_to_model(my_data=None):
     prediction = model.predict(df)
     predict_prob = model.predict_proba(df)
 
+    # print...
+    print(predict_prob)
     # 5. Export predictions to json format
     # NOTE: This needs better documentation
     my_prediction = {
         "diagnosis_positive": bool(prediction),
+        "probability_diagnosis_positive": predict_prob[0][1], # prob class 1 – True
         "pred_spread": [abs(x[0]-x[1])/2 for x in predict_prob][0],
         "model_name": model_info["model_name"],
         "model_training_info":model_info["meta"],
