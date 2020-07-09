@@ -158,6 +158,11 @@ def fit_my_data():
     # Success vs. Failure
     if data:
 
+        # Drop the user id
+        for x in ["user_id", "userid"]:
+            if x in data.keys():
+                print("DELETING", x)
+                del(data[x])
         # Right now, no test on the data to make sure it complies with API...
         #  *  *  *  *  *  *  *  *  *  *  *  *
         #  This is where the magic happens
