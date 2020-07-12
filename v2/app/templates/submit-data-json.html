@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  <h1>Submit Data (Json)</h1>
+  <p class="important">
+    To get a prediction, paste a json here with the following schema:
+    <pre>
+    report_date: date survey is completed (ex: "2020-03-27 12:00:00")
+    report_source: `report_diagnosis` (don't change)
+    gender: male, female, non-binary, other (string)
+    age: (int)
+    calendar:
+        onset: Date of onset of symptoms. (str "%m/%d%Y")
+        tested: if tested for covid, date of test. (str "%m/%d%Y")
+    postcode: Postal code (string format)
+    country: "United States of America"
+    country_code: "USA" (string)
+    diagnosis:
+        tested: yes, no (string)
+    symptoms: A dictionary of symptoms with boolean keys. (Flexible, throw anything at it....!)
+        fever: False
+        cough: True
+
+      </pre>
+  </p>
+
+  <!-- Create a form -->
+  <form method="POST">
+    {{ form.csrf_token }}
+    {{ form.hidden_tag() }}
+
+    <div class="form-group all-fields">
+
+    {{ form.allFields() }}
+    </div>
+
+    <input type="submit" value="Submit!" />
+
+  </form>
+{% endblock %}
